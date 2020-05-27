@@ -1,13 +1,10 @@
-console.log("app.js")
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const https = require("https");
 const fs = require("fs");
 const nunjucks = require("nunjucks");
-const auth = require("express-basic-auth")
-
-const router = require("./routes/routes");
+// const auth = require("express-basic-auth")
 
 const app = express();
 
@@ -31,7 +28,8 @@ nunjucks.configure('views', {
 });
 
 // URL-Routes:
-app.use(router);
+app.use(require("./routes/main"));
+app.use(require("./routes/api"));
 
 // Create and start https Server:
 const PORT = process.env.PORT || 443;

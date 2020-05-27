@@ -5,12 +5,13 @@
   "main": "app",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "app.js"
+    "start": "nodemon --inspect app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "events": "^3.1.0",
     "express": "^4.17.1",
     "express-basic-auth": "^1.2.0",
     "express-handlebars": "^3.1.0",
@@ -18,5 +19,14 @@
     "minimist": "^1.2.5",
     "nunjucks": "^3.2.1",
     "pug": "^2.0.4"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndreasHeine/express_webapp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AndreasHeine/express_webapp/issues"
+  },
+  "homepage": "https://github.com/AndreasHeine/express_webapp#readme"
 }
