@@ -1,28 +1,26 @@
 const express = require("express");
 const Logger = require("../events/Logger")
+const config = require("../config")
 
 const router = express.Router();
 const l = new Logger;
 
-router.route("/")
+router.route("/api/v1")
     .all((req, res, next) => {
-        l.log(req.url);
+        l.log(req.query);
         next();
     })
     .get((req, res) => {
-        res.render("index.html", {
-            firstname: "max",
-            lastname: "mustermann"
-        });
+        res.send("done");
     })
 
-router.route("/about")
+router.route("/api/v1/help")
     .all((req, res, next) => {
-        l.log(req.url);
+        l.log(req.query);
         next();
     })
     .get((req, res) => {
-        res.render("about.html");
+        res.send("Help!");
     })
 
 module.exports = router;

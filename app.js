@@ -23,8 +23,9 @@ nunjucks.configure('views', {
 });
 
 // URL-Routes:
-app.use("/", require("./routes/main"));
-app.use("/api", require("./routes/api"));
+app.use(require("./routes/main"));
+app.use(require("./routes/api"));
+app.use(require("./routes/api_v1"));
 
 // Create and start https Server:
 const PORT = process.env.PORT || 443;

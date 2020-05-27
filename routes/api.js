@@ -3,18 +3,12 @@ const Logger = require("../events/Logger")
 const config = require("../config")
 
 const router = express.Router();
-const myLogger = new Logger;
+const l = new Logger;
 
-router.route("/")
+router.route("/api")
     .all((req, res, next) => {
-        myLogger.log(req.query);
-        next()
-    })
-    .get((req, res) => {
-        res.send({
-            firstname: "max",
-            lastname: "mustermann"
-        });
+        l.log(req.query);
+        res.redirect("/api/v1/help");
     })
 
 module.exports = router;
