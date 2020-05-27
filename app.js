@@ -4,7 +4,6 @@ const cors = require("cors");
 const https = require("https");
 const fs = require("fs");
 const nunjucks = require("nunjucks");
-// const auth = require("express-basic-auth")
 
 const app = express();
 
@@ -12,10 +11,6 @@ app.use(express.static('public'));
 
 // Security:
 app.use(helmet());
-app.disable('x-powered-by');
-// app.use(auth({
-//     users: { 'admin': 'qwertz' }
-// }));
 
 // Simple Usage (Enable All CORS Requests)
 app.use(cors());
@@ -28,8 +23,8 @@ nunjucks.configure('views', {
 });
 
 // URL-Routes:
-app.use(require("./routes/main"));
-app.use(require("./routes/api"));
+app.use("/", require("./routes/main"));
+app.use("/api", require("./routes/api"));
 
 // Create and start https Server:
 const PORT = process.env.PORT || 443;

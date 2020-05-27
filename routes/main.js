@@ -1,7 +1,7 @@
 const express = require("express");
-const router = express.Router();
 const Logger = require("../events/Logger")
 
+const router = express.Router();
 const myLogger = new Logger;
 
 router.route("/")

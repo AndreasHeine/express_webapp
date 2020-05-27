@@ -1,13 +1,13 @@
 const express = require("express");
-const router = express.Router();
 const Logger = require("../events/Logger")
 const config = require("../config")
 
+const router = express.Router();
 const myLogger = new Logger;
 
-router.route("/api")
+router.route("/")
     .all((req, res, next) => {
-        myLogger.log(req.url);
+        myLogger.log(req.query);
         next()
     })
     .get((req, res) => {
