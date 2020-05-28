@@ -11,10 +11,7 @@ router.route("/")
         next();
     })
     .get((req, res) => {
-        res.render("index.html", {
-            firstname: "max",
-            lastname: "mustermann"
-        });
+        res.render("index.html", {});
     })
 
 router.route("/about")
@@ -23,7 +20,7 @@ router.route("/about")
         next();
     })
     .get((req, res) => {
-        res.render("about.html");
+        res.render("about.html", {});
     })
 
 module.exports = router;
