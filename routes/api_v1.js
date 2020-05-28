@@ -14,8 +14,9 @@ Authentification:
 */
 
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
-const jwtKey = "mysecretkey";
+const jwtKey = bcrypt.genSaltSync(10);
 const jwtExpirySeconds = 30;
 
 const users = {

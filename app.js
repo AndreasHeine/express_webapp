@@ -5,6 +5,7 @@ const https = require("https");
 const fs = require("fs");
 const nunjucks = require("nunjucks");
 const bodyParser = require('body-parser')
+const bcrypt = require("bcrypt");
 
 // instantiate express-app:
 const app = express();
@@ -37,6 +38,6 @@ const PORT = process.env.PORT || 5000;//443;
 https.createServer({
     key: fs.readFileSync('./private/certs/key.pem'),
     cert: fs.readFileSync('./private/certs/cert.pem'),
-    passphrase: fs.readFileSync('./private/secretstuff/key.txt', "utf-8")
+    passphrase: bcrypt.genSaltSync(64)
 }, app)
 .listen(PORT);
