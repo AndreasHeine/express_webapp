@@ -33,7 +33,7 @@ nunjucks.configure('views', {
 });
 
 // create and start server:
-const PORT = process.env.PORT || 443;
+const PORT = process.env.PORT || 5000;//443;
 https.createServer({
     key: fs.readFileSync('./private/certs/key.pem'),
     cert: fs.readFileSync('./private/certs/cert.pem'),

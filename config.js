@@ -5,6 +5,8 @@ module.exports = config = {
     database: {
         ip: "127.0.0.1",
         user: "root",
-        pw: ""
+        pw: "",
+        db: "express",
+        table: "app"
     }
 }

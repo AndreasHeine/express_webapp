@@ -1,9 +1,11 @@
 const express = require("express");
-const Logger = require("../events/logger")
-const config = require("../config")
+const Logger = require("../events/logger");
+const config = require("../config");
+const DbHandler = require("../events/dbhandler");
 
 const router = express.Router();
 const l = new Logger;
+const db = new DbHandler;
 
 router.route("/api/v1")
     .all((req, res, next) => {
@@ -11,6 +13,7 @@ router.route("/api/v1")
         next();
     })
     .get((req, res) => {
+        db.insert("data")
         res.send("done");
     })
 
