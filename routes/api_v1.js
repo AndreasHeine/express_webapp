@@ -7,12 +7,22 @@ const router = express.Router();
 const l = new Logger;
 const db = new DbHandler;
 
+function isAuthenticated(req, res, next) {
+    try {
+        if (req.user.authenticated) {
+            return next();
+        }
+    } catch {
+        return res.status(401).send({ error: 'Unauthorized' });
+    }
+}
+
 router.route("/api/v1")
     .all((req, res, next) => {
         l.log(req.query);
         next();
     })
-    .get((req, res) => {
+    .get(isAuthenticated, (req, res) => {
         db.insert("data")
         res.send("done");
     })

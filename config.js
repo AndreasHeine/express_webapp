@@ -6,7 +6,6 @@ module.exports = config = {
         ip: "127.0.0.1",
         user: "root",
         pw: "",
-        db: "express",
-        table: "app"
+        db: "express"
     }
 }
