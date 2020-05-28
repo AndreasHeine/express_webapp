@@ -19,6 +19,8 @@ const bcrypt = require("bcrypt");
 const jwtKey = bcrypt.genSaltSync(10);
 const jwtExpirySeconds = 30;
 
+const usersalt = bcrypt.genSaltSync(16);
+
 const users = {
     admin: "admin",
     author: "author",
@@ -30,7 +32,7 @@ const login = (req, res) => {
 	if (!username || !password || users[username] !== password) {
 		return res.status(401).end();
 	}
-	const token = jwt.sign({ username }, jwtKey, {
+	const token = jwt.sign({ username, password, usersalt }, jwtKey, {
 		algorithm: "HS256",
 		expiresIn: jwtExpirySeconds,
 	})
@@ -38,15 +40,15 @@ const login = (req, res) => {
     res.end();
 }
 
-const authenticated = (req, res) => {
+const authenticated = (req, res, next) => {
+    const token = req.headers.key;
+    if (!token) {
+        return res.status(401).end();
+    }
     try {
-        const token = req.headers.key;
-        if (!token) {
-            return res.status(401).end();
-
-        }
-        let payload = jwt.verify(token, jwtKey);
-        res.send(`Welcome ${payload.username}!`);
+        const payload = jwt.verify(token, jwtKey);
+        if (users[payload.username] == payload.password) {next()}
+        return res.status(401).end();
     } catch (e) {
         if (e instanceof jwt.JsonWebTokenError) {
 			return res.status(401).end();
