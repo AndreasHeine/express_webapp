@@ -19,7 +19,7 @@ const bcrypt = require("bcrypt");
 const jwtKey = bcrypt.genSaltSync(10);
 const jwtExpirySeconds = 30;
 
-const usersalt = bcrypt.genSaltSync(16);
+const pwsalt = bcrypt.genSaltSync(10);
 
 const users = {
     admin: "admin",
@@ -27,12 +27,13 @@ const users = {
 	user: "user",
 }
 
-const login = (req, res) => {
+const login = async (req, res) => {
 	const { username, password } = req.body
 	if (!username || !password || users[username] !== password) {
 		return res.status(401).end();
-	}
-	const token = jwt.sign({ username, password, usersalt }, jwtKey, {
+    }
+    const hash = await bcrypt.hash(password, pwsalt);
+	const token = jwt.sign({ username, hash }, jwtKey, {
 		algorithm: "HS256",
 		expiresIn: jwtExpirySeconds,
 	})
@@ -40,21 +41,23 @@ const login = (req, res) => {
     res.end();
 }
 
-const authenticated = (req, res, next) => {
+const authenticated = async (req, res, next) => {
     const token = req.headers.key;
+    let payload;
     if (!token) {
         return res.status(401).end();
     }
     try {
-        const payload = jwt.verify(token, jwtKey);
-        if (users[payload.username] == payload.password) {next()}
-        return res.status(401).end();
-    } catch (e) {
-        if (e instanceof jwt.JsonWebTokenError) {
+        payload = jwt.verify(token, jwtKey);
+    } catch (err) {
+        if (err instanceof jwt.JsonWebTokenError) {
 			return res.status(401).end();
 		}
         return res.status(400).end();
     }
+    let pw1 = await bcrypt.hash(users[payload.username], pwsalt);
+    if (pw1 == payload.hash) {next();}
+    return res.status(401).end();
 }
 
 /*
