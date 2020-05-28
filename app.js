@@ -18,7 +18,7 @@ app.use(express.static('public'));
 
 // set bodyparser:
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // set security:
 app.use(helmet());
