@@ -1,5 +1,5 @@
 const express = require("express");
-const Logger = require("../events/Logger")
+const Logger = require("../events/logger")
 const config = require("../config")
 
 const router = express.Router();
