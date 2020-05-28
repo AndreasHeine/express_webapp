@@ -16,7 +16,7 @@ Authentification:
 const jwt = require("jsonwebtoken");
 
 const jwtKey = "mysecretkey";
-const jwtExpirySeconds = 300;
+const jwtExpirySeconds = 30;
 
 const users = {
     admin: "admin",
@@ -33,14 +33,13 @@ const login = (req, res) => {
 		algorithm: "HS256",
 		expiresIn: jwtExpirySeconds,
 	})
-	//console.log("token:", token);
-	res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 });
-	res.end();
+    res.header("key", token).send()
+    res.end();
 }
 
 const authenticated = (req, res) => {
     try {
-        const token = req.cookies.token;
+        const token = req.headers.key;
         if (!token) {
             return res.status(401).end();
 
