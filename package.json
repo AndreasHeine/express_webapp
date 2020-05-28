@@ -17,6 +17,7 @@
     "express-basic-auth": "^1.2.0",
     "express-handlebars": "^3.1.0",
     "helmet": "^3.22.0",
+    "jsonwebtoken": "^8.5.1",
     "minimist": "^1.2.5",
     "mysql": "^2.18.1",
     "nunjucks": "^3.2.1",

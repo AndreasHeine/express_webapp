@@ -7,33 +7,75 @@ const router = express.Router();
 const l = new Logger;
 const db = new DbHandler;
 
-function isAuthenticated(req, res, next) {
+/*
+-----------------------------------------------------------------
+Authentification:
+-----------------------------------------------------------------
+*/
+
+const jwt = require("jsonwebtoken");
+
+const jwtKey = "mysecretkey";
+const jwtExpirySeconds = 300;
+
+const users = {
+    admin: "admin",
+    author: "author",
+	user: "user",
+}
+
+const login = (req, res) => {
+	const { username, password } = req.body
+	if (!username || !password || users[username] !== password) {
+		return res.status(401).end();
+	}
+	const token = jwt.sign({ username }, jwtKey, {
+		algorithm: "HS256",
+		expiresIn: jwtExpirySeconds,
+	})
+	//console.log("token:", token);
+	res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 });
+	res.end();
+}
+
+const authenticated = (req, res) => {
     try {
-        if (req.user.authenticated) {
-            return next();
+        const token = req.cookies.token;
+        if (!token) {
+            return res.status(401).end();
+
         }
-    } catch {
-        return res.status(401).send({ error: 'Unauthorized' });
+        let payload = jwt.verify(token, jwtKey);
+        res.send(`Welcome ${payload.username}!`);
+    } catch (e) {
+        if (e instanceof jwt.JsonWebTokenError) {
+			return res.status(401).end();
+		}
+        return res.status(400).end();
     }
 }
 
-router.route("/api/v1")
-    .all((req, res, next) => {
-        l.log(req.query);
-        next();
-    })
-    .get(isAuthenticated, (req, res) => {
-        db.insert("data")
-        res.send("done");
-    })
+/*
+-----------------------------------------------------------------
+Routes:
+-----------------------------------------------------------------
+*/
 
 router.route("/api/v1/help")
-    .all((req, res, next) => {
-        l.log(req.query);
-        next();
-    })
     .get((req, res) => {
         res.send("Help!");
+    })
+
+router.route("/api/v1/login")
+    .post(login)
+    .get((req, res) => {
+        res.redirect("/api/v1/help");
+    })
+
+router.route("/api/v1")
+    .get(authenticated, (req, res) => {
+        db.insert("data");
+        res.send("done");
     })
 
 module.exports = router;
