@@ -19,45 +19,35 @@ const bcrypt = require("bcrypt");
 const jwtKey = bcrypt.genSaltSync(10);
 const jwtExpirySeconds = 30;
 
-const pwsalt = bcrypt.genSaltSync(10);
-
+/*
+Users and passwords should come from database, i implement it later!
+*/
 const users = {
-    admin: "admin",
-    author: "author",
-	user: "user",
+    admin: "password"
 }
 
-const login = async (req, res) => {
+const login = (req, res) => {
 	const { username, password } = req.body
 	if (!username || !password || users[username] !== password) {
-		return res.status(401).end();
+		return res.status(401).send({ auth: false, message: "Wrong user or password", timestamp: Date.now() });
     }
-    const hash = await bcrypt.hash(password, pwsalt);
-	const token = jwt.sign({ username, hash }, jwtKey, {
+	const token = jwt.sign({ username }, jwtKey, {
 		algorithm: "HS256",
 		expiresIn: jwtExpirySeconds,
 	})
-    res.header("key", token).send()
-    res.end();
+    res.status(200).send({ auth: true, token: token });
 }
 
-const authenticated = async (req, res, next) => {
-    const token = req.headers.key;
-    let payload;
+const authenticated = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
     if (!token) {
-        return res.status(401).end();
+        return res.status(401).send({ auth: false, message: "No token provided.", timestamp: Date.now() });
     }
-    try {
-        payload = jwt.verify(token, jwtKey);
-    } catch (err) {
-        if (err instanceof jwt.JsonWebTokenError) {
-			return res.status(401).end();
-		}
-        return res.status(400).end();
+    jwt.verify(token, jwtKey, (err, decoded) => {
+        if (err) return res.status(401).send({ auth: false, message: "Failed to authenticate token.", timestamp: Date.now() });
+        next();
     }
-    let pw1 = await bcrypt.hash(users[payload.username], pwsalt);
-    if (pw1 == payload.hash) {next();}
-    return res.status(401).end();
+    );
 }
 
 /*
@@ -68,7 +58,7 @@ Routes:
 
 router.route("/api/v1/help")
     .get((req, res) => {
-        res.send("Help!");
+        res.render("index.html", {})
     })
 
 router.route("/api/v1/login")
@@ -77,10 +67,12 @@ router.route("/api/v1/login")
         res.redirect("/api/v1/help");
     })
 
-router.route("/api/v1")
+router.route("/api/v1/test")
     .get(authenticated, (req, res) => {
-        db.insert("data");
-        res.send("done");
+        res.status(200).send({ message: "your requested data", timestamp: Date.now() });
+    })
+    .post(authenticated, (req, res) => {
+        res.status(200).send({ message: "data saved", valid: true , timestamp: Date.now() });
     })
 
 module.exports = router;

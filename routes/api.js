@@ -7,7 +7,6 @@ const l = new Logger;
 
 router.route("/api")
     .all((req, res, next) => {
-        l.log(req.query);
         res.redirect("/api/v1/help");
     })
 
