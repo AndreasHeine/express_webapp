@@ -23,7 +23,7 @@
     "minimist": "^1.2.5",
     "mysql": "^2.18.1",
     "nunjucks": "^3.2.1",
-    "pug": "^2.0.4"
+    "pug": "^3.0.1"
   },
   "devDependencies": {},
   "repository": {
